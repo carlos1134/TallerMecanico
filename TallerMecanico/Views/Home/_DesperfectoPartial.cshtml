@@ -1,0 +1,48 @@
+﻿@model TallerMecanico.Modelos.Taller
+
+<div class="card" style="width: 50rem; margin: 20px auto; border: 1px solid rgb(2 1 1 / 8%);">
+    <div class="card-body" style="padding: 1.5rem 4rem;">
+        <h5 class="card-title text-center mb-4">Ingrese los desperfectos del automóvil</h5>
+        @*<form method="post" asp-controller="Home" asp-action="Finalizar">*@
+
+        <div class="form-group">
+            <label for="descripcion" class="mb-1" style="font-weight: bold; color: #953030;">Descripción:</label>
+            <input asp-for="desperfecto.Descripcion" class="form-control" placeholder="Descripción del desperfecto" required>
+        </div>
+        <div class="form-group">
+            <label for="manoDeObra" class="mb-1" style="font-weight: bold; color: #953030;">Mano de obra:</label>
+            <input asp-for="desperfecto.ManoDeObra" class="form-control" placeholder="Costo de mano de obra" step="0.01" required>
+        </div>
+        <div class="form-group">
+            <label for="tiempo" class="mb-1" style="font-weight: bold; color: #953030;">Tiempo:</label>
+            <input asp-for="desperfecto.Tiempo" class="form-control" placeholder="Estimación de tiempo de trabajo en días" step="1" required>
+        </div>
+
+        <div class="text-center" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+            <button type="button" onclick="mostrarFormularioAutomovil()" class="btn btn-secondary">Atrás</button>
+            <button type="button" id="botonAgregarRepuesto" onclick="ingresarCampoRepuesto()" class="btn btn-success" style="margin-right: 10px;">Ingresar Repuesto</button>
+            <button type="submit" class="btn btn-primary" style="margin-right: 10px;">Finalizar</button>
+        </div>
+        @*</form>*@
+    </div>
+</div>
+
+<script>
+    function mostrarFormularioAutomovil() {
+        document.getElementById("formularioAutomovil").style.display = "block";
+        document.getElementById("formularioMoto").style.display = "none";
+        document.getElementById("botonAutomovil").style.display = "none";
+        document.getElementById("botonMoto").style.display = "none";
+        document.getElementById("formularioDesperfectos").style.display = "none";
+
+    }
+    function ingresarCampoRepuesto() {
+        document.getElementById("formularioAutomovil").style.display = "none";
+        document.getElementById("botonAutomovil").style.display = "none";
+        document.getElementById("botonMoto").style.display = "none";
+        document.getElementById("formularioDesperfectos").style.display = "none";
+        document.getElementById("formularioRepuesto").style.display = "block";
+    }
+    document.getElementById("botonAutomovil").addEventListener("click", mostrarFormularioAutomovil);
+
+</script>

@@ -1,0 +1,129 @@
+﻿@model TallerMecanico.Modelos.Taller
+
+<div class="card" style="width: 50rem; margin: 20px auto; border: 1px solid rgb(2 1 1 / 8%);">
+    <div class="card-body" style="padding: 1.5rem 4rem;">
+        <h5 class="card-title text-center mb-4">Ingrese los repuestos para el desperfecto</h5>
+
+        @for (var i = 0; i < Model.repuestos.Count; i++)
+        {
+            <div class="form-group">
+                <label for="repuestos[i].Nombre" class="mb-1" style="font-weight: bold; color: #953030;">Descripción del Repuesto:</label>
+                <input asp-for="repuestos[i].Nombre" class="form-control" placeholder="Descripción del repuesto">
+            </div>
+            <div class="form-group">
+                <label asp-for="repuestos[i].Precio" class="mb-1" style="font-weight: bold; color: #953030;">Precio del Repuesto:</label>
+                <input asp-for="repuestos[i].Precio" type="decimal" class="form-control" placeholder="Precio del repuesto" step="0.01">
+            </div>
+        }
+
+        <div id="tablaRepuestos" class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < Model.repuestos.Count; i++)
+                    {
+                        <tr>
+                            <td>@Model.repuestos[i].Nombre</td>
+                            <td>@Model.repuestos[i].Precio</td>
+                            <td>
+                                <button type="button" onclick="eliminarRepuesto(@i)" class="btn btn-danger btn-sm">Eliminar</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+            <button type="button" onclick="mostrarFormularioDesperfectos()" class="btn btn-secondary">Atrás</button>
+            <button type="button" class="btn btn-success" onclick="agregarRepuesto()">Agregar Repuesto</button>
+            <button type="submit" class="btn btn-primary" style="margin-right: 10px;">Finalizar</button>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    function mostrarFormularioDesperfectos() {
+        document.getElementById("formularioAutomovil").style.display = "none";
+        document.getElementById("botonAutomovil").style.display = "none";
+        document.getElementById("botonMoto").style.display = "none";
+        document.getElementById("formularioDesperfectos").style.display = "block";
+        document.getElementById("formularioRepuesto").style.display = "none";
+
+    }
+    function cambiarTextoBoton() {
+        var boton = document.getElementById("botonAgregarRepuesto");
+        if (boton.textContent === "Ingresar Repuesto") {
+            boton.textContent = "Agregar Repuesto";
+        }
+        if (boton.textContent === "Agregar Repuesto") {
+            document.getElementById("formularioRepuesto").style.display = "block";
+        }
+    }
+    var repuestos = [];
+
+    function agregarRepuesto() {
+        // Obtén la descripción y el precio del repuesto actual
+        var descripcionInput = document.querySelector(`[name="repuestos[${repuestos.length}].Nombre"]`);
+        var precioInput = document.querySelector(`[name="repuestos[${repuestos.length}].Precio"]`);
+
+        var descripcion = descripcionInput.value;
+        var precio = parseFloat(precioInput.value);
+
+        if (descripcion && !isNaN(precio)) {
+            repuestos.push({ nombre: descripcion, precio: precio });
+            mostrarTablaRepuestos();
+
+            // Limpiar los campos después de agregar un repuesto
+            descripcionInput.value = "";
+            precioInput.value = "";
+        }
+    }
+
+        
+    function mostrarTablaRepuestos() {
+        var tablaRepuestos = document.querySelector("#tablaRepuestos tbody");
+        tablaRepuestos.innerHTML = ""; // Limpiar la tabla actual
+
+        repuestos.forEach(function (repuesto, index) {
+            var row = tablaRepuestos.insertRow();
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            cell1.innerHTML = repuesto.descripcion;
+            cell2.innerHTML = repuesto.precio;
+            cell3.innerHTML = `<button type="button" onclick="eliminarRepuesto(${index})" class="btn btn-danger btn-sm">Eliminar</button>`;
+            //@Model.repuestos = repuestos
+        });
+    }
+
+    function eliminarRepuesto(index) {
+        repuestos.splice(index, 1);
+        mostrarTablaRepuestos();
+    }
+
+    function enviarFormulario(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Confirmas los datos incluidos?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Si'
+        }).then((resultado) => {
+            if (resultado.isConfirmed) {
+                document.getElementById('miFormulario').submit();
+            }
+        })
+    }
+    document.getElementById("botonAutomovil").addEventListener("click", mostrarFormularioAutomovil);
+    document.getElementById("botonAgregarRepuesto").addEventListener("click", cambiarTextoBoton);
+
+</script>

@@ -1,0 +1,210 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model TallerMecanico.Modelos.Taller
+
+<div class="container text-center">
+    <div class="row">
+        <div class="col-md-12">
+            <img src="~/foto.jpg" alt="Logo del taller mecánico" class="img-fluid" style="max-width: 200px; max-height: 200px;" />
+            <h1 class="display-4">Bienvenido al Taller Mecánico</h1>
+            <p class="lead">Confía en nosotros para cuidar de tu vehículo.</p>
+            <p id="pregunta">¿Qué vehículo deseas traer al taller?</p>
+
+            <div class="btn-group" role="group" style="margin-top: 10px;">
+                <a id="botonAutomovil" class="btn btn-primary btn-lg">Automóvil</a>
+            </div>
+            <div class="btn-group" role="group" style="margin-top: 10px;">
+                <a id="botonMoto" class="btn btn-secondary btn-lg">Moto</a>
+            </div>
+
+
+            <form id="miFormulario" method="post" asp-controller="Home" asp-action="Finalizar" onsubmit="enviarFormulario(event)">
+                <!-- Paso 1: Datos del cliente -->
+                <div id="formularioCliente" style="display: none;">
+                    <h2>Datos del Cliente</h2>
+                    <div class="card" style="width: 50rem; margin: 20px auto; border: 1px solid rgb(2 1 1 / 8%);">
+                        <div class="card-body" style="padding: 1.5rem 4rem;">
+                            <h5 class="card-title text-center mb-4">Ingrese los datos del dueño del vehiculo</h5>
+                            <div class="error-message" id="errorMessageCliente" style="color: red; display: none; margin-block: 15px;">Por favor, complete todos los campos obligatorios.</div>
+                            <div class="form-group">
+                                <label for="Nombre" class="mb-1" style="font-weight: bold; color: #953030;">Nombre:</label>
+                                @Html.EditorFor(model => model.presupuesto.Nombre, new { htmlAttributes = new { @class = "form-control", @required = "required", @placeholder = "Nombre del dueño" } })
+                            </div>
+                            <div class="form-group">
+                                <label for="Apellido" class="mb-1" style="font-weight: bold; color: #953030;">Apellido:</label>
+                                @Html.EditorFor(model => model.presupuesto.Apellido, new { htmlAttributes = new { @class = "form-control", @required = "required", @placeholder = "Apellido del dueño" } })
+                            </div>
+                            <div class="form-group">
+                                <label for="Email" class="mb-1" style="font-weight: bold; color: #953030;">Email:</label>
+                                @Html.EditorFor(model => model.presupuesto.Email, new { htmlAttributes = new { @class = "form-control", @required = "required", @placeholder = "Email del dueño" } })
+                            </div>
+                            <div class="text-center" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                                <button type="button" class="btn btn-secondary">Atrás</button>
+                                <button type="button" onclick="mostrarFormularioAutomovilOMoto()" class="btn btn-primary" style="margin-right: 10px;">Siguiente</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paso 2: Datos del vehículo -->
+                <div id="formularioAutomovil" style="display: none;">
+                    <h2>Datos del Automóvil</h2>
+                    <div class="card" style="width: 50rem; margin: 20px auto; border: 1px solid rgb(2 1 1 / 8%);">
+                        <div class="card-body" style="padding: 1.5rem 4rem;">
+                            <h5 class="card-title text-center mb-4">Ingrese los datos del automóvil</h5>
+                            <div class="error-message" id="errorMessageAutomovil" style="color: red; display: none; margin-block: 15px;">Por favor, complete todos los campos obligatorios.</div>
+                            <div class="form-group">
+                                <label for="Marca" class="mb-1" style="font-weight: bold; color: #953030;">Marca:</label>
+                                <input asp-for="vehiculo.Marca" class="form-control" placeholder="Marca del automóvil">
+                            </div>
+                            <div class="form-group">
+                                <label for="modelo" class="mb-1" style="font-weight: bold; color: #953030;">Modelo:</label>
+                                <input asp-for="vehiculo.Modelo" class="form-control" placeholder="Modelo del automóvil">
+                            </div>
+                            <div class="form-group">
+                                <label for="patente" class="mb-1" style="font-weight: bold; color: #953030;">Patente:</label>
+                                <input asp-for="vehiculo.Patente" class="form-control" placeholder="Patente del automóvil">
+                            </div>
+                            <div class="form-group" id="tipoVehiculoSelector">
+                                <label for="TipoVehiculo" class="mb-1" style="font-weight: bold; color: #953030;">Tipo de Vehículo:</label>
+                                <select asp-for="automovil.Tipo" asp-items="Html.GetEnumSelectList<TallerMecanico.Modelos.Taller.TipoAutomovil>()" class="form-control">
+                                    <option value="">Selecciona un tipo de vehículo</option>
+                                </select>
+                            </div>
+                            <div class="text-center" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                                <button type="button" onclick="mostrarFormularioCliente()" class="btn btn-secondary">Atrás</button>
+                                <button type="button" onclick="mostrarFormularioDesperfectos()" class="btn btn-primary" style="margin-right: 10px;">Siguiente</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                  <!-- Paso 2: Datos Motocicleta -->
+                <div id="formularioMotocicleta" style="display: none;">
+                    <h2>Datos de la Motocicleta</h2>
+                    <div class="card" style="width: 50rem; margin: 20px auto; border: 1px solid rgb(2 1 1 / 8%);">
+                        <div class="card-body" style="padding: 1.5rem 4rem;">
+                            <h5 class="card-title text-center mb-4">Ingrese los datos de la motocicleta</h5>
+                            <div class="error-message" id="errorMessageMotocicleta" style="color: red; display: none; margin-block: 15px;">Por favor, complete todos los campos obligatorios.</div>
+                            <div class="form-group">
+                                <label for="Marca" class="mb-1" style="font-weight: bold; color: #953030;">Marca:</label>
+                                <input id="marcamoto" asp-for="vehiculo.Marca" class="form-control" placeholder="Marca de la motocicleta">
+                            </div>
+                            <div class="form-group">
+                                <label for="modelo" class="mb-1" style="font-weight: bold; color: #953030;">Modelo:</label>
+                                <input id="modelomoto" asp-for="vehiculo.Modelo" class="form-control" placeholder="Modelo de la motocicleta">
+                            </div>
+                            <div class="form-group">
+                                <label for="patente" class="mb-1" style="font-weight: bold; color: #953030;">Patente:</label>
+                                <input id="patentemoto" asp-for="vehiculo.Patente" class="form-control" placeholder="Patente de la motocicleta">
+                            </div>
+                             <div class="form-group">
+                                <label for="patente" class="mb-1" style="font-weight: bold; color: #953030;">Cilindrada:</label>
+                                <input id="cilindradamoto" asp-for="moto.Cilindrada" class="form-control" placeholder="Cilindrada de la motocicleta">
+                            </div>
+                            <div class="text-center" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                                <button type="button" onclick="mostrarFormularioCliente()" class="btn btn-secondary">Atrás</button>
+                                <button type="button" onclick="mostrarFormularioDesperfectos()" class="btn btn-primary" style="margin-right: 10px;">Siguiente</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paso 3: Desperfectos -->
+                <div id="formularioDesperfectos" style="display: none;">
+                    <h2>Desperfectos</h2>
+                    <div class="card" style="width: 50rem; margin: 20px auto; border: 1px solid rgb(2 1 1 / 8%);">
+                        <div class="card-body" style="padding: 1.5rem 4rem;">
+                            <h5 class="card-title text-center mb-4">Ingrese los desperfectos del vehiculo</h5>
+
+                            <div class="form-group">
+                                <label for="descripcion" class="mb-1" style="font-weight: bold; color: #953030;">Descripción:</label>
+                                <input asp-for="desperfecto.Descripcion" class="form-control" placeholder="Descripción del desperfecto" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="manoDeObra" class="mb-1" style="font-weight: bold; color: #953030;">Mano de obra:</label>
+                                <input asp-for="desperfecto.ManoDeObra" class="form-control" placeholder="Costo de mano de obra" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tiempo" class="mb-1" style="font-weight: bold; color: #953030;">Tiempo:</label>
+                                <input asp-for="desperfecto.Tiempo" class="form-control" placeholder="Estimación de tiempo de trabajo en días" step="1" required>
+                            </div>
+
+                            <div class="text-center" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                                <button type="button" onclick="mostrarFormularioAutomovilOMoto()" class="btn btn-secondary">Atrás</button>
+                                <button type="button" id="botonAgregarRepuesto" onclick="ingresarCampoRepuesto()" class="btn btn-success" style="margin-right: 10px;">Ingresar Repuesto</button>
+                                <button type="submit" class="btn btn-primary" style="margin-right: 10px;">Finalizar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paso 4: Repuestos -->
+                <div id="formularioRepuesto" style="display: none;">
+                    <h2>Repuestos</h2>
+                    <div class="card" style="width: 50rem; margin: 20px auto; border: 1px solid rgb(2 1 1 / 8%);">
+                        <div class="card-body" style="padding: 1.5rem 4rem;">
+                            <h5 class="card-title text-center mb-4">Ingrese los repuestos para el desperfecto</h5>
+
+                            @if (Model.repuestos.Count == 0 || Model.repuestos == null)
+                            {
+                                <div class="form-group">
+                                    <label class="mb-1" style="font-weight: bold; color: #953030;">Descripción del Repuesto:</label>
+                                    <input id="repuestos_0__Nombre" type="text" name="repuestos.Nombre" class="form-control" placeholder="Descripción del repuesto" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="mb-1" style="font-weight: bold; color: #953030;">Precio del Repuesto:</label>
+                                    <input id="repuestos_0__Precio" type="decimal" name="repuestos.Precio" class="form-control" placeholder="Precio del repuesto" step="0.01" />
+                                </div>
+                            }
+
+                            @for (var i = 0; i < Model.repuestos.Count; i++)
+                            {
+                                <div class="form-group">
+                                    <label class="mb-1" style="font-weight: bold; color: #953030;">Descripción del Repuesto:</label>
+                                    <input id="repuestos_0__Nombre" type="text" name="repuestos[@i].Nombre" class="form-control" placeholder="Descripción del repuesto" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="mb-1" style="font-weight: bold; color: #953030;">Precio del Repuesto:</label>
+                                    <input id="repuestos_0__Precio" type="decimal" name="repuestos[@i].Precio" class="form-control" placeholder="Precio del repuesto" step="0.01" />
+                                </div>
+                            }
+
+                            <div id="tablaRepuestos" class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Descripción</th>
+                                            <th>Precio</th>
+                                            <th>Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (var i = 0; i < Model.repuestos.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>@Model.repuestos[i].Nombre</td>
+                                                <td>@Model.repuestos[i].Precio</td>
+                                                <td>
+                                                    <button type="button" onclick="eliminarRepuesto(@i)" class="btn btn-danger btn-sm">Eliminar</button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-center" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                                <button type="button" onclick="mostrarFormularioDesperfectos()" class="btn btn-secondary">Atrás</button>
+                                <button type="button" class="btn btn-success" onclick="agregarRepuesto()">Agregar Repuesto</button>
+                                <button type="submit" class="btn btn-primary" style="margin-right: 10px;">Finalizar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<script src="~/js/site.js"></script>
+

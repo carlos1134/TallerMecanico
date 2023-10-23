@@ -1,0 +1,45 @@
+﻿@model TallerMecanico.Modelos.Taller
+
+@*<form method="post" asp-controller="Home" onsubmit="return mostrarFormularioDesperfectos()">*@
+    <div class="card" style="width: 50rem; margin: 20px auto; border: 1px solid rgb(2 1 1 / 8%);">
+        <div class="card-body" style="padding: 1.5rem 4rem;">
+            <h5 class="card-title text-center mb-4">Ingrese los datos del automóvil</h5>
+            <div class="error-message" id="errorMessage" style="color: red; display: none;">Por favor, complete todos los campos obligatorios.</div>
+            <div class="form-group">
+                <label for="Marca" class="mb-1" style="font-weight: bold; color: #953030;">Marca:</label>
+                <input asp-for="vehiculo.Marca" class="form-control" placeholder="Marca del automóvil" required>
+            </div>
+            <div class="form-group">
+                <label for="modelo" class="mb-1" style="font-weight: bold; color: #953030;">Modelo:</label>
+            <input asp-for="vehiculo.Modelo" class="form-control" placeholder="Modelo del automóvil" required>
+            </div>
+            <div class="form-group">
+                <label for="patente" class="mb-1" style="font-weight: bold; color: #953030;">Patente:</label>
+            <input asp-for="vehiculo.Patente" class="form-control" placeholder="Patente del automóvil" required>
+            </div>
+            <div class="text-center" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                <button type="button" class="btn btn-secondary">Atrás</button>
+                <button type="button" onclick="mostrarFormularioDesperfectos()" class="btn btn-primary" style="margin-right: 10px;">Siguiente</button>
+            </div>
+        </div>
+    </div>
+@*</form>*@
+
+
+<script>
+    function mostrarFormularioDesperfectos() {
+        var marcaInput = document.getElementById("Marca");
+        var modeloInput = document.getElementById("modelo");
+        var patenteInput = document.getElementById("patente");
+        var errorMessage = document.getElementById("errorMessage");
+
+        if (marcaInput.checkValidity() && modeloInput.checkValidity() && patenteInput.checkValidity()) {
+            // No es necesario hacer nada aquí, ya que el formulario se enviará automáticamente al hacer clic en el botón "Siguiente" de tipo submit.
+            errorMessage.style.display = "none"; // Oculta el mensaje de error si los campos están completos.
+            return true; // Permite que el formulario se envíe.
+        } else {
+            errorMessage.style.display = "block"; // Muestra el mensaje de error si faltan campos por completar.
+            return false; // Evita que el formulario se envíe.
+        }
+    }
+</script>

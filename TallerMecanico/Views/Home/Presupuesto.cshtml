@@ -1,0 +1,102 @@
+﻿@model TallerMecanico.Modelos.Taller
+
+@{
+    ViewData["Title"] = "Presupuesto";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Presupuesto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #2d4d72;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 28px;
+            margin: 0;
+        }
+
+        p {
+            font-size: 18px;
+            margin: 20px 0;
+        }
+
+        .costo-total {
+            font-size: 36px;
+            color: #e74c3c; /* Color rojo */
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+            table th, table td {
+                border: 1px solid #ccc;
+                padding: 8px;
+            }
+
+            table th {
+                background-color: #2d4d72;
+                color: #fff;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Presupuesto de Reparación</h1>
+    </div>
+
+    <div class="container">
+        <p>Estimado cliente <strong>@Model.presupuesto.Nombre @Model.presupuesto.Apellido</strong>,</p>
+        <p>Para su vehículo <strong>@Model.vehiculo.Marca @Model.vehiculo.Modelo (@Model.vehiculo.Patente)</strong>, el costo total de reparación es:</p>
+        <p class="costo-total">$@Model.CostoTotal</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Componente del Costo</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var componente in Model.ComponentesCosto)
+                {
+                    <tr>
+                        <td>@componente.Nombre</td>
+                        <td>$@componente.Valor</td>
+                    </tr>
+                }
+                <tr>
+                    <td><strong>Total:</strong></td>
+                    <td><strong>$@Model.CostoTotal</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
